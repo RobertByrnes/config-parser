@@ -1,0 +1,26 @@
+{
+    "name": "ConfigParser",
+    "version": "0.0.1",
+    "description": "Run time configuration file parser for Arduino / ESP / IOT",
+    "keywords": "configuration, runtime, parser",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/RobertByrnes/config-parser.git"
+    },
+    "authors":
+    [
+      {
+        "name": "Robert Byrnes",
+        "email": "robbyrnes@hotmail.co.uk",
+        "url": ""
+      }
+    ],
+    "license": "GNU General Public License v3.0",
+    "homepage": "",
+    "dependencies": {
+      "ownername/print": "~1.3.0"
+    },
+    "frameworks": "*",
+    "platforms": "*"
+  }
