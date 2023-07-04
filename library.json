@@ -1,6 +1,6 @@
 {
     "name": "ConfigParser",
-    "version": "0.0.1",
+    "version": "1.0.1",
     "description": "Run time configuration file parser for Arduino / ESP / IOT",
     "keywords": "configuration, runtime, parser",
     "repository":

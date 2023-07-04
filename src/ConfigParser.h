@@ -17,6 +17,9 @@ public:
     static int findInt(const __FlashStringHelper * key);
     static float findFloat(const __FlashStringHelper * key);
     static string findString(const __FlashStringHelper * key);
+    static bool copyFile(fs::FS &fs, const char *sourcePath, const char *destPath);
+    static void setBackUpFilePath(const char * path);
+    static std::string backUpFilePath;
 private:
     ConfigParser();
     static bool fileSystemUp();
