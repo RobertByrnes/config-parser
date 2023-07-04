@@ -1,5 +1,7 @@
 #include "ConfigParser.h"
 
+std::string ConfigParser::backUpFilePath = "";
+
 bool ConfigParser::fileSystemUp() {
     if (!SPIFFS.begin(true)) {
         log_e("An Error has occurred while mounting SPIFFS");
@@ -83,11 +85,56 @@ string ConfigParser::ascii2String(char *ascii, int length) {
     return str;
 }
 
+bool ConfigParser::copyFile(fs::FS &fs, const char *sourcePath, const char *destPath) {
+  File sourceFile = fs.open(sourcePath, "r");
+  if (!sourceFile) {
+    return false; // Source file not found or failed to open
+  }
+
+  File destFile = fs.open(destPath, "w");
+  if (!destFile) {
+    sourceFile.close();
+    return false; // Destination file failed to open
+  }
+
+  // Read from source file and write to destination file
+  uint8_t buffer[128];
+  while (sourceFile.available()) {
+    size_t bytesRead = sourceFile.read(buffer, sizeof(buffer));
+    destFile.write(buffer, bytesRead);
+  }
+
+  sourceFile.close();
+  destFile.close();
+
+  return true; // File copied successfully
+}
+
+void ConfigParser::setBackUpFilePath(const char * path) {
+    ConfigParser::backUpFilePath = path;
+}
+
 int ConfigParser::findKey(const __FlashStringHelper * key, char * value) {
+    if(!SPIFFS.exists("/.env") == true) {
+        if(SPIFFS.exists(ConfigParser::backUpFilePath.c_str()) == true) {
+            log_d("Attempting to restore .env from .env.backup"); 
+            if (ConfigParser::copyFile(SPIFFS, ConfigParser::backUpFilePath.c_str(), "/.env")) {
+                log_d("Restored .env from %s", ConfigParser::backUpFilePath.c_str());
+            } else {
+                log_e("Failed to restore .env from %s", ConfigParser::backUpFilePath.c_str());
+                return 1;
+            }
+        } else {
+            log_e("Failed to open .env, %s not found", "/.env");
+            return 1;
+        }
+    }
+
     File configFile = SPIFFS.open("/.env", "r", false);
+    log_d("Opening %s for reading", "/.env");
 
     if (!configFile) {
-        log_e("Failed to open config for reading");
+        log_e("Failed to open .env, %s exists but failed to open", "/.env");
         return 1;
     }
 
